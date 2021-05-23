@@ -2,6 +2,8 @@
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
+using WampSharp.Core;
 using WampSharp.Core.Listener;
 using WampSharp.Core.Message;
 
@@ -15,6 +17,7 @@ namespace WampSharp.V2.Fluent
         private readonly IEventPatternSource<EventArgs> mConnectionOpen;
         private readonly IEventPatternSource<EventArgs> mConnectionClosed;
         private readonly IEventPatternSource<WampConnectionErrorEventArgs> mConnectionError;
+        public event AsyncEventHandler<EventArgs> ConnectionClosedAsync;
 
         public ScheduledWampConnection(IControlledWampConnection<TMessage> connection, IScheduler scheduler)
         {
@@ -102,6 +105,11 @@ namespace WampSharp.V2.Fluent
         {
             add => mConnectionError.OnNext += value;
             remove => mConnectionError.OnNext -= value;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await mConnection.DisposeAsync();
         }
     }
 }

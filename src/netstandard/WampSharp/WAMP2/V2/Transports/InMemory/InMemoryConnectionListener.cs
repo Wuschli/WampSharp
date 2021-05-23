@@ -4,6 +4,8 @@ using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
+using WampSharp.Core;
 using WampSharp.Core.Listener;
 using WampSharp.Core.Message;
 using WampSharp.V2.Binding;
@@ -29,10 +31,10 @@ namespace WampSharp.V2.Transports
 
         public IControlledWampConnection<TMessage> CreateClientConnection(IScheduler scheduler)
         {
-            Subject<WampMessage<TMessage>> serverInput = 
+            Subject<WampMessage<TMessage>> serverInput =
                 new Subject<WampMessage<TMessage>>();
-            
-            Subject<WampMessage<TMessage>> clientInput = 
+
+            Subject<WampMessage<TMessage>> clientInput =
                 new Subject<WampMessage<TMessage>>();
 
             Subject<Unit> connectionOpen = new Subject<Unit>();
@@ -75,7 +77,7 @@ namespace WampSharp.V2.Transports
 
                 IDisposable connectionClosedSubscription =
                     mConnectionClosed.Take(1)
-                                     .Subscribe(x => RaiseConnectionClosed());
+                        .Subscribe(x => RaiseConnectionClosed());
 
                 IDisposable connectionOpenSubscription =
                     mConnectionOpen.Subscribe(x => RaiseConnectionOpen());
@@ -145,6 +147,13 @@ namespace WampSharp.V2.Transports
             {
                 ConnectionOpen?.Invoke(this, EventArgs.Empty);
             }
+
+            public async ValueTask DisposeAsync()
+            {
+                mOutgoing.OnCompleted();
+            }
+
+            public event AsyncEventHandler<EventArgs> ConnectionClosedAsync;
         }
     }
 }

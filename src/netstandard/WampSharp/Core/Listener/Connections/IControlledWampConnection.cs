@@ -6,11 +6,11 @@ namespace WampSharp.Core.Listener
     /// </summary>
     /// <remarks>
     /// This interface was created in order to apply client side connection
-    /// capabilites.
+    /// capabilities.
     /// </remarks>
     /// <typeparam name="TMessage"></typeparam>
     public interface IControlledWampConnection<TMessage> : 
-        IWampConnection<TMessage>
+        IAsyncWampConnection<TMessage>
     {
         /// <summary>
         /// Tries to establish a connection to the remote server.

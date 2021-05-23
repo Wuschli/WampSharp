@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using WampSharp.Core.Client;
 using WampSharp.Core.Listener;
 using WampSharp.Core.Proxy;
@@ -16,7 +17,7 @@ namespace WampSharp.V2.Client
         private readonly IWampServerProxyOutgoingMessageHandlerBuilder<TMessage, IWampClient<TMessage>> mOutgoingHandlerBuilder;
 
         public ManualWampServerProxyBuilder(IWampOutgoingRequestSerializer serializer,
-                                            IWampServerProxyOutgoingMessageHandlerBuilder<TMessage, IWampClient<TMessage>> outgoingHandlerBuilder)
+            IWampServerProxyOutgoingMessageHandlerBuilder<TMessage, IWampClient<TMessage>> outgoingHandlerBuilder)
         {
             mSerializer = serializer;
             mOutgoingHandlerBuilder = outgoingHandlerBuilder;
@@ -26,13 +27,13 @@ namespace WampSharp.V2.Client
         {
             IWampOutgoingMessageHandler outgoingMessageHandler = mOutgoingHandlerBuilder.Build(client, connection);
 
-            WampServerProxy result = 
+            WampServerProxy result =
                 new WampServerProxy(outgoingMessageHandler, mSerializer, connection);
 
             return result;
         }
 
-        private class WampServerProxy : ProxyBase, IWampServerProxy, IDisposable
+        private class WampServerProxy : ProxyBase, IWampServerProxy, IAsyncDisposable
         {
             private static readonly MethodInfo mPublish3 = Method.Get((IWampServerProxy proxy) => proxy.Publish(default(long), default(PublishOptions), default(string)));
             private static readonly MethodInfo mPublish4 = Method.Get((IWampServerProxy proxy) => proxy.Publish(default(long), default(PublishOptions), default(string), default(object[])));
@@ -170,6 +171,13 @@ namespace WampSharp.V2.Client
 
             public void Dispose()
             {
+                mDisposable.Dispose();
+            }
+
+            public async ValueTask DisposeAsync()
+            {
+                if (mDisposable is IAsyncDisposable asyncDisposable)
+                    await asyncDisposable.DisposeAsync();
                 mDisposable.Dispose();
             }
         }

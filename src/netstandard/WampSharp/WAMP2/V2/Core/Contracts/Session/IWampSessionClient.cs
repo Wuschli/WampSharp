@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using WampSharp.Core.Contracts;
 using WampSharp.Core.Message;
 
@@ -12,7 +13,7 @@ namespace WampSharp.V2.Core.Contracts
         void Welcome(long session, WelcomeDetails details);
 
         [WampHandler(WampMessageType.v2Abort)]
-        void Abort(AbortDetails details, string reason);
+        Task Abort(AbortDetails details, string reason);
 
         [WampHandler(WampMessageType.v2Goodbye)]
         void Goodbye(GoodbyeDetails details, string reason);

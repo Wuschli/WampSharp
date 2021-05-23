@@ -4,7 +4,7 @@ using WampSharp.Core.Message;
 
 namespace WampSharp.Core.Listener
 {
-    public class ReviveClientConnection<TMessage> : IControlledWampConnection<TMessage>
+    public class ReviveClientConnection<TMessage> : IControlledWampConnection<TMessage>, IAsyncDisposable
     {
         private readonly Func<IControlledWampConnection<TMessage>> mFactory;
         private IControlledWampConnection<TMessage> mConnection;
@@ -110,6 +110,16 @@ namespace WampSharp.Core.Listener
             }
         }
 
+        public async ValueTask DisposeAsync()
+        {
+            IControlledWampConnection<TMessage> connection = mConnection;
+
+            if (connection != null)
+            {
+                await connection.DisposeAsync();
+            }
+        }
+
         public void Send(WampMessage<object> message)
         {
             IControlledWampConnection<TMessage> connection = mConnection;
@@ -127,6 +137,8 @@ namespace WampSharp.Core.Listener
         public event EventHandler ConnectionClosed;
 
         public event EventHandler<WampConnectionErrorEventArgs> ConnectionError;
+
+        public event AsyncEventHandler<EventArgs> ConnectionClosedAsync;
 
         protected virtual void RaiseConnectionOpen()
         {

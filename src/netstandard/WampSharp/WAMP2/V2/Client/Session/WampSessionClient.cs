@@ -100,12 +100,10 @@ namespace WampSharp.V2.Client
                 (session, mSentDetails, details, new SessionTerminator(this)));
         }
 
-        public void Abort(AbortDetails details, string reason)
+        public async Task Abort(AbortDetails details, string reason)
         {
-            using (IDisposable proxy = mServerProxy as IDisposable)
-            {
-                TrySetCloseEventArgs(SessionCloseType.Abort, details, reason);
-            }
+            await using var proxy = mServerProxy as IAsyncDisposable;
+            TrySetCloseEventArgs(SessionCloseType.Abort, details, reason);
         }
 
         public void Goodbye(GoodbyeDetails details, string reason)

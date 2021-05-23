@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using WampSharp.Core.Proxy;
 using WampSharp.Core.Utilities;
 using WampSharp.V2.Core.Contracts;
@@ -46,9 +47,10 @@ namespace WampSharp.V2.Core.Listener.ClientBuilder
             Send(mWelcome2, session, details);
         }
 
-        public void Abort(AbortDetails details, string reason)
+        public Task Abort(AbortDetails details, string reason)
         {
             Send(mAbort2, details, reason);
+            return Task.CompletedTask;
         }
 
         public void Goodbye(GoodbyeDetails details, string reason)

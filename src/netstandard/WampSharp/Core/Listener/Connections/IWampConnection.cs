@@ -27,7 +27,7 @@ namespace WampSharp.Core.Listener
         /// </summary>
         /// <param name="message">The given message.</param>
         void Send(WampMessage<object> message);
-        
+
         /// <summary>
         /// Occurs when this connection opens.
         /// </summary>
@@ -37,12 +37,12 @@ namespace WampSharp.Core.Listener
         /// Occurs when a message arrives.
         /// </summary>
         event EventHandler<WampMessageArrivedEventArgs<TMessage>> MessageArrived;
-        
+
         /// <summary>
         /// Occurs when this connection closes.
         /// </summary>
         event EventHandler ConnectionClosed;
-        
+
         /// <summary>
         /// Occurs when this connection occurs an error.
         /// </summary>
@@ -54,8 +54,8 @@ namespace WampSharp.Core.Listener
     /// A <see cref="IWampConnection{TMessage}"/> with async features
     /// </summary>
     /// <typeparam name="TMessage"></typeparam>
-    internal interface IAsyncWampConnection<TMessage> : IWampConnection<TMessage>,
-                                                        IAsyncDisposable
+    public interface IAsyncWampConnection<TMessage> : IWampConnection<TMessage>,
+        IAsyncDisposable
     {
         /// <summary>
         /// Occurs when this connection closes.
