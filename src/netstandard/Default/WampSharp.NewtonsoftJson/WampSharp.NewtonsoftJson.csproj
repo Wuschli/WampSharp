@@ -5,7 +5,7 @@
     <PackageTags>websockets wampws rpc pubsub newtonsoft json wampv1 wampv2</PackageTags>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
